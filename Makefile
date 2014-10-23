@@ -1,53 +1,37 @@
-#CXXFLAGS =	-O3 -Wall -fmessage-length=0 -std=c++11
-CXXFLAGS = -ggdb -g -Wall -fmessage-length=0 -std=c++11
-CFLAGS = -Wno-address -Wno-char-subscripts # -Wno-sign-compare
+DESTDIR ?= build
 
-SWIFT=$(wildcard interface/*.cpp io/*.cpp utils/jsoncpp/*.cpp model/*.cpp header/*.cpp)
+CXXFLAGS = -ggdb -g -Wall -fmessage-length=0 -std=c++11
+CXXFLAGS += -m64 -fPIC -DPIC
+
+SWIFT=$(wildcard interface/*.cpp io/*.cpp model/*.cpp header/*.cpp)
+
 LIBSWIFTHEADERS=$(wildcard interface/*.h io/*.h model/*.h header/*.h)
 TEST=test.cpp
 CXXSOURCES=$(SWIFT)
 TESTSOURCES=$(TEST)
-#CSOURCES=httpxx/http_parser.c
 
 CXXOBJS=$(CXXSOURCES:%.cpp=%.o)
 TESTOBJS=$(TESTSOURCES:%.cpp=%.o)
-#COBJS=$(CSOURCES:%.c=%.o)
 
 #Includes
-LFLAGS=-Iutils/poco/include -Iutils/jsoncpp -Iheader -Iinterface -Iio -Imodel
+LFLAGS=-I/usr/include/jsoncpp -Iheader -Iinterface -Iio -Imodel
 CXXFLAGS+= $(LFLAGS)
 
-#Libraries
-#LD = -static -LUtils/poco/lib
-LD = -Lutils/poco/lib
-CXXFLAGS+=$(LD)
+LIBS = -lPocoUtil -lPocoXML -lPocoNet -lPocoFoundation -lPocoXML -ljsoncpp -lpthread
 
-LIBS =-lPocoUtild -lPocoUtil -lPocoXML -lPocoNet -lPocoNetd -lPocoFoundation -lPocoXMLd -lPocoFoundationd -lpthread
+LIBSWIFT = libSwift.so.0.1
 
-
-TARGET =	SwiftSDK
-LIBSWIFT = libSwift.a
-
-#CXX=clang++
-all: $(LIBSWIFT) $(TARGET)
+all: $(LIBSWIFT)
 
 $(LIBSWIFT): $(CXXOBJS)
-	ar rcs $@ $^
-	mkdir -p build/libSwift/include/swift
-	mkdir -p build/libSwift/lib
-	mv -f $(LIBSWIFT) build/libSwift/lib
-	cp -rf $(LIBSWIFTHEADERS) build/libSwift/include/swift
-	cp -rf utils/poco build
-	mkdir -p build/json
-	cp -rf utils/jsoncpp/json build/json
+	$(CXX) -m64 -fPIC -DPIC -shared -Wl,-soname,$(LIBSWIFT) -o $@ $^ $(LIBS)
+	#ar rcs $@ $^
 
-$(TARGET):	$(CXXOBJS) $(COBJS) $(TESTOBJS)
-#	$(CXX) -o $(TARGET) $(CXXOBJS) $(LIBS) $(COBJS)
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(CXXOBJS) $(TESTOBJS) $(LIBS)
-
-#$(COBJS): %.o: %.c
-#	$(CC) $(CFLAGS) -c $< -o $@
-
+install:
+	mkdir -p $(DESTDIR)/libSwift/include/swift
+	mkdir -p $(DESTDIR)/libSwift/lib
+	mv -f $(LIBSWIFT) $(DESTDIR)/libSwift/lib
+	cp -rf $(LIBSWIFTHEADERS) $(DESTDIR)/libSwift/include/swift
 
 clean:
-	rm -rf $(CXXOBJS) $(TARGET) $(TESTOBJS) $(LIBSWIFT) $(wildcard build/*)
+	rm -rf $(CXXOBJS) $(LIBSWIFT) $(wildcard build/*)

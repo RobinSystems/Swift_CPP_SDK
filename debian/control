@@ -1,0 +1,20 @@
+Source: swift-cpp-sdk
+Section: misc
+Priority: optional
+Maintainer: Support <support@robinsystems.com>
+Build-Depends: debhelper (>= 9)
+
+Package: swift-cpp-sdk
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: C++ SDK for Swift object storage
+  Swift is a distributed object storages service which is part of openstack 
+  project. This SDK still lacks many functionalities and is under active 
+  development. There are three important entities in this SDK corresponding 
+  to Swift architecture elements. These three elements represent Swift 
+  hierarchy. The first element which is the root level in Swift hierarchy is 
+  Account which contains authentication information and is a namespace for 
+  containers. The second entity is Container, which is a namespace for 
+  objects. Finally, there is Object entity which correspond to a single 
+  object or file in our storage.
+

@@ -1,0 +1,7 @@
+To build the debian package:
+
+Add a new entry to the changelog.  
+    e.g. > dch -i "Comments" 
+
+> dpkg-buildpackage -b
+
