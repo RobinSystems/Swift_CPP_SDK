@@ -20,18 +20,19 @@ CXXFLAGS+= $(LFLAGS)
 LIBS = -lPocoUtil -lPocoXML -lPocoNet -lPocoFoundation -lPocoXML -ljsoncpp -lpthread
 
 LIBSWIFT = libSwift.so.0.1
+LIBSWIFT_SO = libSwift.so
 
 all: $(LIBSWIFT)
 
 $(LIBSWIFT): $(CXXOBJS)
 	$(CXX) -m64 -fPIC -DPIC -shared -Wl,-soname,$(LIBSWIFT) -o $@ $^ $(LIBS)
-	#ar rcs $@ $^
 
 install:
-	mkdir -p $(DESTDIR)/libSwift/include/swift
-	mkdir -p $(DESTDIR)/libSwift/lib
-	mv -f $(LIBSWIFT) $(DESTDIR)/libSwift/lib
-	cp -rf $(LIBSWIFTHEADERS) $(DESTDIR)/libSwift/include/swift
+	mkdir -p $(DESTDIR)/usr/lib
+	mv -f $(LIBSWIFT) $(DESTDIR)/usr/lib
+	(cd $(DESTDIR)/usr/lib; ln -s -f $(LIBSWIFT) $(LIBSWIFT_SO))
+	mkdir -p $(DESTDIR)/usr/include/swift
+	cp -rf $(LIBSWIFTHEADERS) $(DESTDIR)/usr/include/swift
 
 clean:
 	rm -rf $(CXXOBJS) $(LIBSWIFT) $(wildcard build/*)

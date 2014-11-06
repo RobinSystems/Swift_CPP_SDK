@@ -1,5 +1,6 @@
-swift-cpp-sdk (0.1-1) UNRELEASED; urgency=medium
+swift-cpp-sdk (0.1-1ubuntu1) UNRELEASED; urgency=medium
 
   * Initial release. (Closes: #XXXXXX)
+  * Add .so instance of library
 
- -- root <root@9768d6456051>  Thu, 23 Oct 2014 01:30:44 +0000
+ -- root <root@ee62415fb0fb>  Thu, 06 Nov 2014 01:41:31 +0000
